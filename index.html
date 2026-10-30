@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kefada Fashion | Kids fashion, delivery all over Lebanon</title>
+<meta name="description" content="Kefada Fashion: kids clothing for boys, girls and babies. Order on WhatsApp. Delivery all over Lebanon.">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+
+<header class="site-header">
+  <a class="wordmark" href="#top">Kefada Fashion</a>
+  <nav class="nav" aria-label="Main">
+    <a class="link" href="#shop">Shop</a>
+    <a class="link" href="#about">How it works</a>
+    <a class="link" href="#contact">Contact</a>
+    <a class="btn btn-gold" data-wa href="#contact" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <div class="hero-text">
+      <div class="eyebrow">Kids fashion · Delivery all over Lebanon</div>
+      <h1>Elegant style for your little ones</h1>
+      <p>Browse the collection, check what is in stock, and order in one tap on WhatsApp.</p>
+      <div><a class="btn btn-ink" href="#shop">Browse the collection</a></div>
+    </div>
+    <div class="hero-logo">
+      <img src="assets/logo.jpg" alt="Kefada Fashion logo">
+    </div>
+  </section>
+
+  <section id="shop" class="shop wrap">
+    <h2>Shop the collection</h2>
+
+    <div class="filters" id="filters">
+      <div class="f-row" id="row-collection" hidden>
+        <div class="f-label">Collection</div>
+        <div class="f-pills" id="f-collection"></div>
+      </div>
+      <div class="f-row" id="row-genre" hidden>
+        <div class="f-label">Genre</div>
+        <div class="f-pills" id="f-genre"></div>
+      </div>
+      <div class="f-row" id="row-size" hidden>
+        <div class="f-label">Size</div>
+        <div class="f-pills" id="f-size"></div>
+      </div>
+    </div>
+
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden>No items match these filters. Try choosing All.</p>
+  </section>
+
+  <section id="about" class="about">
+    <div class="wrap about-inner">
+      <div>
+        <h2 class="h-small">How ordering works</h2>
+        <p>1. Pick an item, choose a size and tap Order on WhatsApp.<br>
+           2. Your message opens with the item, size, price and photo already filled in.<br>
+           3. Confirm your address and payment with us in the chat.</p>
+      </div>
+      <div>
+        <h2 class="h-small">Delivery</h2>
+        <p id="delivery-text">We deliver all over Lebanon. All prices are in USD.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer wrap">
+  <div>
+    <div class="foot-name">Kefada Fashion</div>
+    <a class="foot-line" data-wa data-wa-text href="#contact" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+    <div class="foot-line" id="foot-delivery">Delivery to: All Lebanon</div>
+  </div>
+  <div>
+    <div class="foot-line" id="foot-instagram">Instagram: coming soon</div>
+    <div class="foot-line small" id="foot-year"></div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <button type="button" class="lb-btn lb-close" id="lb-close" aria-label="Close photo">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" id="lb-prev" aria-label="Previous photo">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+  </button>
+  <img id="lb-img" alt="">
+  <button type="button" class="lb-btn lb-next" id="lb-next" aria-label="Next photo">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+  </button>
+  <div class="lb-count" id="lb-count"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="products-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+// Saved copy of your items. The site shows these only until you link the Google Sheet (see README.md, part 3).
+window.FALLBACK_ROWS = [
+  {
+    "ID": "129039K",
+    "Name": "Boys Short set",
+    "Collection": "Summer",
+    "Genre": "Boys",
+    "Price": "15",
+    "Sale price (optional)": "",
+    "Available sizes": "",
+    "Quantity": "0",
+    "Photo file names": "129039K.jpeg",
+    "Description": "Soft cotton t-shirt, round neck with shorts",
+    "Show on site": "Yes",
+    "Status (auto)": "Sold out"
+  },
+  {
+    "ID": "312463K",
+    "Name": "Girls Dress",
+    "Collection": "Summer",
+    "Genre": "Girls",
+    "Price": "12",
+    "Sale price (optional)": "10",
+    "Available sizes": "3,5,6,7,8,9",
+    "Quantity": "6",
+    "Photo file names": "312463K.jpeg",
+    "Description": "dress",
+    "Show on site": "Yes",
+    "Status (auto)": "In stock + On sale"
+  },
+  {
+    "ID": "125966K",
+    "Name": "Boys Short set",
+    "Collection": "Summer",
+    "Genre": "Boys",
+    "Price": "15",
+    "Sale price (optional)": "",
+    "Available sizes": "3,4",
+    "Quantity": "2",
+    "Photo file names": "125966K.jpeg,125966K-1.jpeg",
+    "Description": "Soft cotton t-shirt, round neck with shorts",
+    "Show on site": "Yes",
+    "Status (auto)": "Low stock"
+  },
+  {
+    "ID": "129070KGr",
+    "Name": "Boys Short set",
+    "Collection": "Summer",
+    "Genre": "Boys",
+    "Price": "15",
+    "Sale price (optional)": "",
+    "Available sizes": "",
+    "Quantity": "0",
+    "Photo file names": "129070KGr.jpeg",
+    "Description": "",
+    "Show on site": "Yes",
+    "Status (auto)": "Sold out"
+  },
+  {
+    "ID": "129093K",
+    "Name": "girls jeans + top",
+    "Collection": "Summer",
+    "Genre": "Girls",
+    "Price": "20",
+    "Sale price (optional)": "15",
+    "Available sizes": "9,10",
+    "Quantity": "2",
+    "Photo file names": "129093K.jpeg,129093K-1.jpeg",
+    "Description": "",
+    "Show on site": "Yes",
+    "Status (auto)": "Low stock + On sale"
+  },
+  {
+    "ID": "412091K",
+    "Name": "boys survette",
+    "Collection": "Winter",
+    "Genre": "Boys",
+    "Price": "25",
+    "Sale price (optional)": "",
+    "Available sizes": "6,8,13",
+    "Quantity": "3",
+    "Photo file names": "412091K.jpeg",
+    "Description": "",
+    "Show on site": "Yes",
+    "Status (auto)": "Low stock"
+  }
+];
