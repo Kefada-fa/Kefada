@@ -251,12 +251,12 @@
     }
     photo += '</div>';
 
-    var price = '';
+    var price = '<div class="price">';
     if (p.shown !== null) {
-      price = '<div class="price">' +
-        (p.onSale ? '<span class="old">' + esc(money(p.price)) + '</span>' : '') +
-        '<span class="now' + (p.onSale ? ' sale' : '') + '">' + esc(money(p.shown)) + '</span></div>';
+      price += (p.onSale ? '<span class="old">' + esc(money(p.price)) + '</span>' : '') +
+        '<span class="now' + (p.onSale ? ' sale' : '') + '">' + esc(money(p.shown)) + '</span>';
     }
+    price += '</div>';
 
     var sizes = '<div class="sizes"><div class="sizes-label">Available sizes:' + (p.sizes.length ? '' : ' None') + '</div>';
     if (p.sizes.length) {
@@ -281,7 +281,7 @@
       (sel ? 'Order size ' + esc(sel) + ' on WhatsApp' : 'Order on WhatsApp') + '</a>';
 
     return '<article class="card' + (p.soldOut ? ' sold' : '') + '" data-card="' + p.uid + '">' + photo +
-      '<div class="info"><div class="title-row"><h3 class="name">' + esc(p.name) + '</h3>' + price + '</div>' +
+      '<div class="info">' + price + '<h3 class="name">' + esc(p.name) + '</h3>' +
       (p.description ? '<p class="desc">' + esc(p.description) + '</p>' : '') +
       sizes + badge + '<div class="order-area">' + order + '</div></div></article>';
   }

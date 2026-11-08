@@ -114,9 +114,9 @@ h2 { margin: 0; font-family: var(--serif); font-weight: 700; font-size: 44px; }
 .info { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 8px; flex-wrap: wrap; }
 .name { margin: 0; font-weight: 600; font-size: 18px; }
-.price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; min-height: 28px; }
 .price .old { font-size: 15px; color: var(--muted); text-decoration: line-through; }
-.price .now { font-weight: 600; font-size: 18px; }
+.price .now { font-weight: 600; font-size: 22px; }
 .price .now.sale { color: var(--sale); }
 .desc { margin: 0; font-size: 15px; color: var(--muted); }
 .sizes-label { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
@@ -179,7 +179,8 @@ h2 { margin: 0; font-family: var(--serif); font-weight: 700; font-size: 44px; }
   .f-label { min-width: 100%; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .info { padding: 12px; gap: 8px; }
-  .name, .price .now { font-size: 16px; }
+  .name { font-size: 16px; }
+  .price .now { font-size: 20px; }
   .about-inner { padding-top: 40px; padding-bottom: 40px; }
   .lightbox { padding: 64px 8px; }
   .lb-prev { left: 4px; }
