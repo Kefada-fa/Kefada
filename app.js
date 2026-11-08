@@ -216,12 +216,26 @@
     catch (err) { return photoUrl(file); }
   }
 
+  // Must match safeId() in build-item-pages.mjs
+  function safeId(id) {
+    return String(id || '').trim().replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  // Link to the item's own page (it carries the photo preview for WhatsApp).
+  function itemPageUrl(p) {
+    var id = safeId(p.id);
+    if (!id) return '';
+    try { return new URL('item/' + encodeURIComponent(id) + '.html', document.baseURI).href; }
+    catch (err) { return ''; }
+  }
+
   function waLink(p, size) {
     var lines = ['Hello ' + C.storeName + ', I would like to order:', p.name];
     if (p.id) lines.push('Code: ' + p.id);
     if (size) lines.push('Size: ' + size);
     if (p.shown !== null) lines.push('Price: ' + money(p.shown));
-    if (p.photos.length) lines.push('Photo: ' + absolutePhoto(p.photos[0]));
+    var link = itemPageUrl(p) || (p.photos.length ? absolutePhoto(p.photos[0]) : '');
+    if (link) lines.push('Photo: ' + link);
     return 'https://wa.me/' + C.whatsappNumber + '?text=' + encodeURIComponent(lines.join('\n'));
   }
 
