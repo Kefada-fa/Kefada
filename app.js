@@ -188,7 +188,11 @@
     sizeRow.hidden = sizes.length === 0;
     var sh = pillHtml('size', '', 'All', state.sizes.length === 0);
     sizes.forEach(function (s) { sh += pillHtml('size', s, s, state.sizes.indexOf(s) > -1); });
-    document.getElementById('f-size').innerHTML = sh;
+    var sizeBox = document.getElementById('f-size');
+    var keepLeft = sizeBox.scrollLeft;
+    sizeBox.innerHTML = sh;
+    sizeBox.scrollLeft = keepLeft;
+    updateBars();
   }
 
   filtersEl.addEventListener('click', function (e) {
@@ -279,7 +283,7 @@
         sizes += '<button type="button" class="size-btn" data-act="size" data-uid="' + p.uid + '" data-size="' + esc(s) +
           '" aria-pressed="' + (sel === s ? 'true' : 'false') + '">' + esc(s) + '</button>';
       });
-      sizes += '</div>';
+      sizes += '</div><div class="sbar" aria-hidden="true"><span></span></div>';
     }
     sizes += '</div>';
 
@@ -308,9 +312,10 @@
       return true;
     });
     function rank(p) { return p.soldOut ? 2 : (p.onSale ? 0 : 1); }
+    // Sale items first, sold out last. Inside each group the newest row of the sheet comes first.
     return list
       .map(function (p) { return p; })
-      .sort(function (a, b) { return (rank(a) - rank(b)) || (a.uid - b.uid); });
+      .sort(function (a, b) { return (rank(a) - rank(b)) || (b.uid - a.uid); });
   }
 
   function renderGrid() {
@@ -318,14 +323,48 @@
     gridEl.innerHTML = list.map(cardHtml).join('');
     emptyEl.hidden = list.length > 0;
     countEl.textContent = list.length === 1 ? '1 item' : list.length + ' items';
+    updateBars();
   }
+
+  // Small slider bar under the size rows that slide sideways (phones).
+  function updateBar(bar) {
+    var scroller = bar.previousElementSibling;
+    if (!scroller) return;
+    var total = scroller.scrollWidth, visible = scroller.clientWidth;
+    if (total - visible > 2) {
+      var thumb = bar.firstElementChild;
+      thumb.style.width = (visible / total * 100) + '%';
+      thumb.style.left = (scroller.scrollLeft / total * 100) + '%';
+      bar.classList.add('on');
+    } else {
+      bar.classList.remove('on');
+    }
+  }
+
+  function updateBars() {
+    Array.prototype.forEach.call(document.querySelectorAll('.sbar'), updateBar);
+  }
+
+  document.addEventListener('scroll', function (e) {
+    var t = e.target;
+    if (t && t.nextElementSibling && t.nextElementSibling.classList && t.nextElementSibling.classList.contains('sbar')) {
+      updateBar(t.nextElementSibling);
+    }
+  }, true);
+  window.addEventListener('resize', updateBars);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateBars);
 
   function byUid(uid) { return state.products[uid]; }
 
   function refreshCard(uid, focusSelector) {
     var el = gridEl.querySelector('[data-card="' + uid + '"]');
     if (!el) return;
+    var oldList = el.querySelector('.size-list');
+    var keepLeft = oldList ? oldList.scrollLeft : 0;
     el.outerHTML = cardHtml(byUid(uid));
+    var newList = gridEl.querySelector('[data-card="' + uid + '"] .size-list');
+    if (newList) newList.scrollLeft = keepLeft;
+    updateBars();
     if (focusSelector) {
       var f = gridEl.querySelector('[data-card="' + uid + '"] ' + focusSelector);
       if (f) f.focus();
