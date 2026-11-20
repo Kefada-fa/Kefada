@@ -12,12 +12,14 @@
     lowStockAt: 3
   }, window.SITE_CONFIG || {});
 
-  var state = { collection: 'All', genre: 'All', sizes: [], sel: {}, photoIdx: {}, products: [] };
+  var state = { collection: 'All', genre: 'All', sizes: [], sel: {}, photoIdx: {}, products: [], page: 1 };
 
   var gridEl = document.getElementById('grid');
   var filtersEl = document.getElementById('filters');
   var countEl = document.getElementById('count');
   var emptyEl = document.getElementById('empty');
+  var pagerEl = document.getElementById('pager');
+  var phoneMq = window.matchMedia ? window.matchMedia('(max-width: 640px)') : { matches: false };
 
   /* ---------- helpers ---------- */
 
@@ -144,6 +146,7 @@
       if (p) list.push(p);
     });
     state.products = list;
+    state.page = 1;
     renderFilters();
     renderGrid();
   }
@@ -207,6 +210,7 @@
     } else {
       state[g] = v;
     }
+    state.page = 1;
     renderFilters();
     renderGrid();
   });
@@ -316,13 +320,65 @@
       .sort(function (a, b) { return (rank(a) - rank(b)) || (b.uid - a.uid); });
   }
 
+  // 6 items per page on phones, 12 on larger screens.
+  function perPage() { return phoneMq.matches ? 6 : 12; }
+
+  function pageNumbers(cur, total) {
+    var out = [], last = 0;
+    for (var n = 1; n <= total; n++) {
+      if (n === 1 || n === total || Math.abs(n - cur) <= 1) {
+        if (last && n - last > 1) out.push('gap');
+        out.push(n);
+        last = n;
+      }
+    }
+    return out;
+  }
+
+  function renderPager(total) {
+    if (total <= 1) { pagerEl.hidden = true; pagerEl.innerHTML = ''; return; }
+    var cur = state.page;
+    var h = '<button type="button" class="pg pg-arrow" data-page="' + (cur - 1) + '" aria-label="Previous page"' + (cur === 1 ? ' disabled' : '') + '>&#8249;</button>';
+    pageNumbers(cur, total).forEach(function (n) {
+      if (n === 'gap') h += '<span class="pg-gap" aria-hidden="true">&hellip;</span>';
+      else h += '<button type="button" class="pg" data-page="' + n + '" aria-label="Page ' + n + '"' + (n === cur ? ' aria-current="page"' : '') + '>' + n + '</button>';
+    });
+    h += '<button type="button" class="pg pg-arrow" data-page="' + (cur + 1) + '" aria-label="Next page"' + (cur === total ? ' disabled' : '') + '>&#8250;</button>';
+    pagerEl.innerHTML = h;
+    pagerEl.hidden = false;
+  }
+
   function renderGrid() {
     var list = visibleProducts();
-    gridEl.innerHTML = list.map(cardHtml).join('');
+    var size = perPage();
+    var total = Math.max(1, Math.ceil(list.length / size));
+    if (state.page > total) state.page = total;
+    if (state.page < 1) state.page = 1;
+    var start = (state.page - 1) * size;
+    gridEl.innerHTML = list.slice(start, start + size).map(cardHtml).join('');
     emptyEl.hidden = list.length > 0;
-    countEl.textContent = list.length === 1 ? '1 item' : list.length + ' items';
+    if (list.length === 0) countEl.textContent = '0 items';
+    else if (list.length <= size) countEl.textContent = list.length === 1 ? '1 item' : list.length + ' items';
+    else countEl.textContent = 'Showing ' + (start + 1) + '-' + Math.min(start + size, list.length) + ' of ' + list.length + ' items';
+    renderPager(total);
     updateBars();
   }
+
+  pagerEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.pg');
+    if (!b || b.disabled) return;
+    state.page = parseInt(b.getAttribute('data-page'), 10);
+    renderGrid();
+    var top = document.getElementById('shop');
+    if (top && top.scrollIntoView) top.scrollIntoView();
+  });
+
+  // Turning the phone, or resizing the window, can change the page size.
+  var lastPerPage = perPage();
+  window.addEventListener('resize', function () {
+    var n = perPage();
+    if (n !== lastPerPage) { lastPerPage = n; renderGrid(); }
+  });
 
   // Small slider bar under the size rows that slide sideways (phones).
   function updateBar(bar) {
