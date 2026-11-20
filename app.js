@@ -287,10 +287,8 @@
     }
     sizes += '</div>';
 
-    var badge;
-    if (p.soldOut) badge = '<span class="badge out">Sold out</span>';
-    else if (p.qty <= C.lowStockAt) badge = '<span class="badge low">Only ' + p.qty + ' left</span>';
-    else badge = '<span class="badge in">In stock: ' + p.qty + '</span>';
+    // Quantities are not shown to customers. Only sold-out items get a label.
+    var badge = p.soldOut ? '<span class="badge out">Sold out</span>' : '';
 
     var order;
     if (p.soldOut) order = '<div class="out-btn">Out of stock</div>';
@@ -496,12 +494,9 @@
     });
     document.getElementById('foot-delivery').textContent = 'Delivery to: ' + C.deliveryText;
     document.getElementById('delivery-text').textContent = 'We deliver to: ' + C.deliveryText + '. All prices are in USD.';
-    var ig = document.getElementById('foot-instagram');
-    if (C.instagram) {
-      var handle = String(C.instagram).replace(/^@/, '');
-      ig.innerHTML = '<a href="https://instagram.com/' + encodeURIComponent(handle) +
-        '" target="_blank" rel="noopener noreferrer">Instagram: @' + esc(handle) + '</a>';
-    }
+    var handle = String(C.instagram || 'kefada.fashion').replace(/^@/, '');
+    var igUrl = 'https://www.instagram.com/' + encodeURIComponent(handle) + '/';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ig]'), function (a) { a.setAttribute('href', igUrl); });
     document.getElementById('foot-year').textContent = '© ' + new Date().getFullYear() + ' ' + C.storeName;
   }
 

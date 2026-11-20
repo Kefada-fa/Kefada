@@ -1,10 +1,12 @@
 :root {
   --ink: #2A1D1A;
-  --rose: #B87565;
-  --rose-fill: #C48A78;
+  --rose: #E8C4B8;
+  --rose-fill: #E8C4B8;
+  --rose-accent: #B87565;
+  --head-ink: #6B362A;
   --rose-deep: #8A4A3B;
   --ivory: #FBF6F3;
-  --line: #EBDCD5;
+  --line: #E8C4B8;
   --muted: #625049;
   --sale: #8C2441;
   --script: 'Pinyon Script', 'Snell Roundhand', 'Apple Chancery', Georgia, serif;
@@ -35,17 +37,21 @@ img { max-width: 100%; }
   min-height: 44px; padding: 0 22px; border-radius: 999px;
   font-weight: 600; letter-spacing: 0.02em; cursor: pointer;
 }
-.btn-rose { background: var(--rose-fill); color: var(--ink); }
 .btn-ink { background: var(--ink); color: #fff; min-height: 52px; padding: 0 32px; font-size: 17px; }
 
 /* Header */
 .site-header {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 8px 16px; padding: 16px 32px; background: #fff; border-bottom: 2px solid var(--rose);
+  gap: 8px 16px; padding: 16px 32px; background: var(--rose); border-bottom: 2px solid #D9AE9F;
 }
-.wordmark { font-family: var(--script); font-weight: 400; font-size: 42px; line-height: 1.1; color: var(--rose-deep); }
+.wordmark { font-family: var(--script); font-weight: 400; font-size: 42px; line-height: 1.1; color: var(--head-ink); }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; font-weight: 500; font-size: 16px; }
 .nav .link { padding: 12px 0; }
+.ig-link { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 999px; color: var(--head-ink); }
+.ig-link:hover { background: rgba(255, 255, 255, 0.5); }
+.ig-link svg { display: block; }
+.site-footer .ig-link { background: var(--rose); color: var(--head-ink); }
+.site-footer .ig-link:hover { background: #DDB3A5; }
 
 /* Hero */
 .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 48px; padding-top: 72px; padding-bottom: 72px; }
@@ -152,6 +158,17 @@ h2 { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 700;
 .foot-line { display: block; padding: 4px 0; font-size: 16px; color: var(--muted); }
 .foot-line.small { font-size: 14px; }
 
+/* Floating WhatsApp bubble: stays at the bottom right while the page scrolls */
+.wa-float {
+  position: fixed; z-index: 40; right: 20px; bottom: 20px;
+  right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom));
+  width: 60px; height: 60px; border-radius: 999px; background: #25D366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 18px rgba(42, 29, 26, 0.35);
+}
+.wa-float:hover { background: #1EBE5A; }
+.wa-float svg { display: block; }
+
 /* Photo viewer */
 .lightbox {
   position: fixed; inset: 0; z-index: 50; background: rgba(42, 29, 26, 0.94);
@@ -169,9 +186,9 @@ h2 { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 700;
 .lb-count { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #fff; font-size: 15px; }
 
 /* Slider bar under the sideways-scrolling size rows (shown only when there are more sizes to slide to) */
-.sbar { display: none; position: relative; height: 4px; margin-top: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.sbar { display: none; position: relative; height: 4px; margin-top: 8px; border-radius: 999px; background: #F3E3DD; overflow: hidden; }
 .sbar.on { display: block; }
-.sbar span { position: absolute; top: 0; bottom: 0; left: 0; width: 30%; border-radius: 999px; background: var(--rose); }
+.sbar span { position: absolute; top: 0; bottom: 0; left: 0; width: 30%; border-radius: 999px; background: var(--rose-accent); }
 .f-row .sbar { flex: 1 1 100%; margin-top: 0; }
 
 /* Phones */
@@ -179,6 +196,8 @@ h2 { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 700;
   .wrap { padding-left: 16px; padding-right: 16px; }
   .site-header { padding: 12px 16px; }
   .wordmark { font-size: 36px; }
+  .wa-float { width: 56px; height: 56px; right: 14px; bottom: 14px; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); }
+  .site-footer { padding-bottom: 96px; }
   .hero { padding-top: 36px; padding-bottom: 40px; gap: 28px; }
   .hero-text p { font-size: 17px; }
   .hero-logo { padding: 16px; border-radius: 20px; }

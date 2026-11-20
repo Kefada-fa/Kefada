@@ -203,8 +203,8 @@ function pageHtml(p, previewUrl, pageUrl, photoRel) {
 *{box-sizing:border-box}
 body{margin:0;font-family:'Jost',system-ui,sans-serif;color:#2A1D1A;background:#FBF6F3;line-height:1.4}
 a{color:inherit;text-decoration:none}
-header{padding:14px 20px;background:#fff;border-bottom:2px solid #B87565}
-.wordmark{font-family:'Pinyon Script','Snell Roundhand',Georgia,serif;font-weight:400;font-size:38px;color:#8A4A3B}
+header{padding:14px 20px;background:#E8C4B8;border-bottom:2px solid #D9AE9F}
+.wordmark{font-family:'Pinyon Script','Snell Roundhand',Georgia,serif;font-weight:400;font-size:38px;color:#6B362A}
 main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
 img.photo{display:block;width:100%;height:auto;border-radius:20px;background:#F4E6E0}
 .price{margin:18px 0 4px;font-size:24px;font-weight:600}

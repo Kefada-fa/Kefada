@@ -48,7 +48,8 @@ If the sheet cannot be read, the site falls back to the saved items in `products
 
 - **Prices, sizes, quantities, sales, new items:** change them in the Google Sheet. Nothing to upload.
 - **New photos:** in GitHub open the `images` folder, click **Add file**, then **Upload files**.
-- **Instagram:** in `config.js`, type your username between the quotes after `instagram:` and commit.
+- **Instagram:** the Instagram icon opens the page set after `instagram:` in `config.js` (now `kefada.fashion`). Change the username there if it ever changes.
+- **WhatsApp bubble:** the round green button at the bottom right follows the page and opens a chat with your number from `config.js`.
 - **Design changes or new features:** ask Claude, and send the files or the GitHub link.
 
 ## 5. Photo preview in WhatsApp (item pages)
@@ -72,7 +73,7 @@ WhatsApp remembers a link's preview for a while. If you change an item's photo, 
 ## How the sheet is read
 
 - One row is one item. Rows with no Name are ignored. "Show on site" set to **No** hides an item.
-- **Quantity** 0 means sold out. A quantity of 3 or less shows "Only N left" (change this in `config.js`).
+- **Quantity** 0 means sold out. The number itself is never shown to customers; only the "Sold out" label appears.
 - A **Sale price** lower than the Price starts a sale.
 - On-sale items go to the top and sold-out items to the end. Inside each group the newest row of the sheet comes first (the last row you add shows first, row 1 shows last).
 - The Collection and Genre filters only show values that have items. A "Baby" button appears once you add a Baby item.
