@@ -76,5 +76,8 @@ WhatsApp remembers a link's preview for a while. If you change an item's photo, 
 - **Quantity** 0 means sold out. The number itself is never shown to customers; only the "Sold out" label appears.
 - A **Sale price** lower than the Price starts a sale.
 - On-sale items go to the top and sold-out items to the end. Inside each group the newest row of the sheet comes first (the last row you add shows first, row 1 shows last).
+- The shop shows 6 items per page on phones and 12 on bigger screens, with page numbers underneath. Choosing a filter goes back to page 1.
+- **Genre** can be Boys, Girls, Baby or Unisex. There is no Unisex button: a Unisex item shows under both Boys and Girls.
+- **Available sizes** can repeat a size to say how many pieces you have of it: `1,2,2,3,4,4,5` shows sizes 1 to 5 once each, and the site remembers 1 piece of size 1, 2 of size 2, 1 of size 3, 2 of size 4 and 1 of size 5. If the Quantity column is empty, the number of sizes listed is the quantity.
 - The Collection and Genre filters only show values that have items. A "Baby" button appears once you add a Baby item.
 - Photo file names are separated by commas. The first one is the main photo and the one sent in the WhatsApp message.

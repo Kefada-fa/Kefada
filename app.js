@@ -106,6 +106,17 @@
     return null;
   }
 
+  // "1,2,2,3,4,4,5" -> sizes 1,2,3,4,5 (shown once each) and how many pieces of each: 1:1, 2:2, 3:1, 4:2, 5:1.
+  function parseSizes(str) {
+    var list = [], counts = {}, total = 0;
+    splitList(str).forEach(function (s) {
+      if (!Object.prototype.hasOwnProperty.call(counts, s)) { counts[s] = 0; list.push(s); }
+      counts[s] += 1;
+      total += 1;
+    });
+    return { list: list, counts: counts, total: total };
+  }
+
   function normalize(obj, uid) {
     var f = {};
     Object.keys(obj).forEach(function (k) {
@@ -117,8 +128,10 @@
 
     var price = toNum(f.price);
     var sale = toNum(f.sale);
+    var sz = parseSizes(f.sizes);
+    // Quantity: the Quantity column if it has a number, otherwise the number of sizes listed (1,2,2,3 = 4 pieces).
     var qty = toNum(f.qty);
-    if (qty === null) qty = 0;
+    if (qty === null) qty = sz.total;
     var soldOut = qty <= 0;
     var onSale = price !== null && sale !== null && sale > 0 && sale < price;
 
@@ -133,7 +146,8 @@
       onSale: onSale,
       qty: qty,
       soldOut: soldOut,
-      sizes: soldOut ? [] : splitList(f.sizes),
+      sizes: soldOut ? [] : sz.list,
+      sizeQty: soldOut ? {} : sz.counts,
       photos: splitList(f.photos),
       description: f.description || ''
     };
@@ -172,7 +186,13 @@
   function renderFilters() {
     var P = state.products;
     var collections = orderedValues(P.map(function (p) { return p.collection; }), ['Summer', 'Winter']);
-    var genres = orderedValues(P.map(function (p) { return p.genre; }), ['Boys', 'Girls', 'Baby']);
+    // Unisex has no button of its own: a Unisex item shows under both Boys and Girls.
+    var genreValues = [];
+    P.forEach(function (p) {
+      if (p.genre === 'Unisex') genreValues.push('Boys', 'Girls');
+      else genreValues.push(p.genre);
+    });
+    var genres = orderedValues(genreValues, ['Boys', 'Girls', 'Baby']);
     var sizes = [];
     P.forEach(function (p) { p.sizes.forEach(function (s) { if (sizes.indexOf(s) < 0) sizes.push(s); }); });
     sizes.sort(sizeSort);
@@ -306,10 +326,14 @@
       sizes + badge + '<div class="order-area">' + order + '</div></div></article>';
   }
 
+  function genreMatches(itemGenre, wanted) {
+    return itemGenre === wanted || (itemGenre === 'Unisex' && (wanted === 'Boys' || wanted === 'Girls'));
+  }
+
   function visibleProducts() {
     var list = state.products.filter(function (p) {
       if (state.collection !== 'All' && p.collection !== state.collection) return false;
-      if (state.genre !== 'All' && p.genre !== state.genre) return false;
+      if (state.genre !== 'All' && !genreMatches(p.genre, state.genre)) return false;
       if (state.sizes.length && !state.sizes.some(function (s) { return p.sizes.indexOf(s) > -1; })) return false;
       return true;
     });

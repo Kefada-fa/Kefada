@@ -96,8 +96,10 @@ function normalize(obj) {
   if ((f.show || '').toLowerCase() === 'no') return null;
   const price = toNum(f.price);
   const sale = toNum(f.sale);
+  const sizeList = [...new Set(splitList(f.sizes))];
+  // Quantity column if it has a number, otherwise the number of sizes listed (1,2,2,3 = 4 pieces).
   let qty = toNum(f.qty);
-  if (qty === null) qty = 0;
+  if (qty === null) qty = splitList(f.sizes).length;
   const soldOut = qty <= 0;
   const onSale = price !== null && sale !== null && sale > 0 && sale < price;
   return {
@@ -108,7 +110,7 @@ function normalize(obj) {
     shown: onSale ? sale : price,
     onSale,
     soldOut,
-    sizes: soldOut ? [] : splitList(f.sizes),
+    sizes: soldOut ? [] : sizeList,
     photos: splitList(f.photos),
     description: f.description || ''
   };
