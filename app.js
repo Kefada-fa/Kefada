@@ -48,13 +48,20 @@
   function upperFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function titleCase(s) { return s ? upperFirst(s.toLowerCase()) : ''; }
 
+  // Size order: newborn, then months (3m, 6m, 12m...), then years (1, 2, 3...), then anything else.
+  function sizeKey(s) {
+    var t = String(s).trim().toLowerCase();
+    if (/^(nb|newborn|new born)$/.test(t)) return [0, 0];
+    var m = t.match(/^(\d+(?:\.\d+)?)\s*(m|mo|mos|month|months)$/);
+    if (m) return [1, parseFloat(m[1])];
+    var n = parseFloat(t);
+    if (!isNaN(n)) return [2, n];
+    return [3, 0];
+  }
+
   function sizeSort(a, b) {
-    var na = parseFloat(a), nb = parseFloat(b);
-    var an = !isNaN(na), bn = !isNaN(nb);
-    if (an && bn) return (na - nb) || a.localeCompare(b);
-    if (an) return -1;
-    if (bn) return 1;
-    return a.localeCompare(b);
+    var ka = sizeKey(a), kb = sizeKey(b);
+    return (ka[0] - kb[0]) || (ka[1] - kb[1]) || String(a).localeCompare(String(b));
   }
 
   /* ---------- reading the sheet (CSV) ---------- */
@@ -114,6 +121,7 @@
       counts[s] += 1;
       total += 1;
     });
+    list.sort(sizeSort);
     return { list: list, counts: counts, total: total };
   }
 
