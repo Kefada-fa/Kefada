@@ -37,6 +37,12 @@ h1{margin:0 0 10px;font-size:22px;font-weight:600}
 p{margin:0 0 10px;color:#625049}
 .sold{display:inline-block;padding:4px 12px;border-radius:999px;background:#F0E6E1;color:#625049;font-weight:600;font-size:14px;margin-bottom:10px}
 .btn{display:flex;align-items:center;justify-content:center;min-height:50px;margin-top:18px;border-radius:12px;background:#2A1D1A;color:#fff;font-weight:600;font-size:16px}
+.btn[aria-disabled=true]{background:#F0E6E1;color:#625049;border:1.5px dashed #C9B3AA;cursor:default}
+.btn2{background:#fff;color:#2A1D1A;border:1.5px solid #DCC9C1}
+.lab{margin:18px 0 8px;font-weight:600}
+.sizes{display:flex;flex-wrap:wrap;gap:8px}
+.sz{min-height:44px;min-width:44px;padding:0 14px;border-radius:12px;border:1.5px solid #DCC9C1;background:#fff;color:#2A1D1A;font:inherit;font-size:16px;font-weight:500;cursor:pointer}
+.sz[aria-pressed=true]{background:#2A1D1A;color:#fff;border-color:#2A1D1A}
 :focus-visible{outline:3px solid #8A4A3B;outline-offset:2px}
 </style>
 </head>
@@ -49,7 +55,18 @@ p{margin:0 0 10px;color:#625049}
 
 <p>Available sizes: 10, 11, 12</p>
 <p>A premium navy cable-knit sweater with an embroidered CK logo, made for dressy days.</p>
-<a class="btn" href="../#shop">Browse the full collection</a>
+<div id="pick">
+<p class="lab">Choose a size</p><div class="sizes"><button type="button" class="sz" data-size="10" aria-pressed="false">10</button><button type="button" class="sz" data-size="11" aria-pressed="false">11</button><button type="button" class="sz" data-size="12" aria-pressed="false">12</button></div>
+<a class="btn" id="add" href="#" data-id="Bsweatb" aria-disabled="true">Choose a size to order</a>
+</div>
+<script>
+(function(){var box=document.getElementById('pick');if(!box)return;var add=document.getElementById('add');var id=add.getAttribute('data-id');var need=!box.hasAttribute('data-nosize');var cur='';
+function set(){if(need&&!cur){add.setAttribute('aria-disabled','true');add.textContent='Choose a size to order';add.setAttribute('href','#');return}
+add.setAttribute('aria-disabled','false');add.textContent=need?'Order size '+cur:'Order this item';add.setAttribute('href','../?add='+encodeURIComponent(id)+(need?'&size='+encodeURIComponent(cur):''))}
+box.addEventListener('click',function(e){var b=e.target.closest('.sz');if(b){cur=b.getAttribute('data-size')===cur?'':b.getAttribute('data-size');Array.prototype.forEach.call(box.querySelectorAll('.sz'),function(x){x.setAttribute('aria-pressed',x.getAttribute('data-size')===cur?'true':'false')});set();return}
+if(e.target.closest('#add')&&add.getAttribute('aria-disabled')==='true')e.preventDefault()});set()})();
+</script>
+<a class="btn btn2" href="../#shop">Browse the full collection</a>
 </main>
 </body>
 </html>
