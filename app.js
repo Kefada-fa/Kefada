@@ -11,6 +11,7 @@
     sheetCsvUrl: '',
     lowStockAt: 3
   }, window.SITE_CONFIG || {});
+  var CC = Object.assign({ facebook: '' }, window.CART_CONFIG || {});
 
   var state = { collection: 'All', genre: 'All', sizes: [], sel: {}, photoIdx: {}, products: [], page: 1 };
 
@@ -20,6 +21,36 @@
   var emptyEl = document.getElementById('empty');
   var pagerEl = document.getElementById('pager');
   var phoneMq = window.matchMedia ? window.matchMedia('(max-width: 640px)') : { matches: false };
+
+  /* ---------- history: the phone Back button goes to the previous click, never straight out of the site ---------- */
+
+  var productsReady = false;
+
+  function snap(o, d) {
+    return { kf: 1, o: o || null, d: d || 0, f: { collection: state.collection, genre: state.genre, sizes: state.sizes.slice(), page: state.page } };
+  }
+  function pushState(o, d) {
+    try { history.pushState(snap(o, d), '', location.href); } catch (err) {}
+  }
+  // One entry for each click that changes what the customer sees (filter, page, photo viewer, cart, checkout).
+  function pushView() { pushState(null, 0); }
+
+  try { history.replaceState(snap(null, 0), '', location.href); } catch (err) {}
+
+  window.addEventListener('popstate', function (e) {
+    var s = e.state;
+    if (!s || !s.kf) s = { o: null, f: null };
+    if (s.f) {
+      var changed = s.f.collection !== state.collection || s.f.genre !== state.genre || s.f.page !== state.page ||
+        s.f.sizes.join('|') !== state.sizes.join('|');
+      if (changed) {
+        state.collection = s.f.collection; state.genre = s.f.genre; state.sizes = s.f.sizes.slice(); state.page = s.f.page;
+        if (productsReady) { renderFilters(); renderGrid(); }
+      }
+    }
+    if (s.o !== 'lb') hideLightbox();
+    if (window.KefadaCart) window.KefadaCart.syncTo(s.o === 'cart' || s.o === 'checkout' ? s.o : null);
+  });
 
   /* ---------- helpers ---------- */
 
@@ -168,9 +199,10 @@
       if (p) list.push(p);
     });
     state.products = list;
-    state.page = 1;
+    productsReady = true;
     renderFilters();
     renderGrid();
+    document.dispatchEvent(new Event('kf:products'));
   }
 
   /* ---------- filters ---------- */
@@ -239,6 +271,7 @@
       state[g] = v;
     }
     state.page = 1;
+    pushView();
     renderFilters();
     renderGrid();
   });
@@ -263,16 +296,6 @@
     if (!id) return '';
     try { return new URL('item/' + encodeURIComponent(id) + '.html', document.baseURI).href; }
     catch (err) { return ''; }
-  }
-
-  function waLink(p, size) {
-    var lines = ['Hello ' + C.storeName + ', I would like to order:', p.name];
-    if (p.id) lines.push('Code: ' + p.id);
-    if (size) lines.push('Size: ' + size);
-    if (p.shown !== null) lines.push('Price: ' + money(p.shown));
-    var link = itemPageUrl(p) || (p.photos.length ? absolutePhoto(p.photos[0]) : '');
-    if (link) lines.push('Photo: ' + link);
-    return 'https://wa.me/' + C.whatsappNumber + '?text=' + encodeURIComponent(lines.join('\n'));
   }
 
   var ARROW_L = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>';
@@ -324,9 +347,9 @@
 
     var order;
     if (p.soldOut) order = '<div class="out-btn">Out of stock</div>';
-    else if (p.sizes.length && !sel) order = '<div class="need">Choose a size to order</div>';
-    else order = '<a class="order" href="' + esc(waLink(p, sel)) + '" target="_blank" rel="noopener noreferrer">' +
-      (sel ? 'Order size ' + esc(sel) + ' on WhatsApp' : 'Order on WhatsApp') + '</a>';
+    else if (p.sizes.length && !sel) order = '<div class="need">Choose a size to add to cart</div>';
+    else order = '<button type="button" class="order" data-act="add" data-uid="' + p.uid + '">' +
+      (sel ? 'Add size ' + esc(sel) + ' to cart' : 'Add to cart') + '</button>';
 
     return '<article class="card' + (p.soldOut ? ' sold' : '') + '" data-card="' + p.uid + '">' + photo +
       '<div class="info">' + price + '<h3 class="name">' + esc(p.name) + '</h3>' +
@@ -400,6 +423,7 @@
     var b = e.target.closest('.pg');
     if (!b || b.disabled) return;
     state.page = parseInt(b.getAttribute('data-page'), 10);
+    pushView();
     renderGrid();
     var top = document.getElementById('shop');
     if (top && top.scrollIntoView) top.scrollIntoView();
@@ -476,6 +500,14 @@
     } else if (act === 'prev') { stepPhoto(p, -1); }
     else if (act === 'next') { stepPhoto(p, 1); }
     else if (act === 'open') { openLightbox(p); }
+    else if (act === 'add') {
+      var sz = state.sel[p.uid] || '';
+      if (window.KefadaCart && window.KefadaCart.add(p.id, sz, t)) {
+        var old = t.textContent;
+        t.textContent = 'Added \u2713'; t.classList.add('added');
+        setTimeout(function () { if (t.isConnected) { t.textContent = old; t.classList.remove('added'); } }, 1300);
+      }
+    }
   });
 
   // Photos that are missing: remove the broken image so "Photo coming soon" shows.
@@ -530,14 +562,22 @@
     if (!n) return;
     lbReturnFocus = document.activeElement;
     lbState = { p: p, i: (state.photoIdx[p.uid] || 0) % n };
+    pushState('lb', 1);
     lb.hidden = false;
     document.body.style.overflow = 'hidden';
     lbShow();
     document.getElementById('lb-close').focus();
   }
 
+  // Closing with the X or the dark area goes one step back in history. Back on the phone does the same.
   function closeLightbox() {
     if (lb.hidden) return;
+    if (history.state && history.state.o === 'lb') { try { history.back(); return; } catch (err) {} }
+    hideLightbox();
+  }
+
+  function hideLightbox() {
+    if (lb.hidden || !lbState) return;
     var p = lbState.p;
     state.photoIdx[p.uid] = lbState.i;
     lb.hidden = true;
@@ -585,16 +625,35 @@
     var handle = String(C.instagram || 'kefada.fashion').replace(/^@/, '');
     var igUrl = 'https://www.instagram.com/' + encodeURIComponent(handle) + '/';
     Array.prototype.forEach.call(document.querySelectorAll('[data-ig]'), function (a) { a.setAttribute('href', igUrl); });
+    var fb = CC.facebook || 'https://www.facebook.com/share/1JEPVobTWy/';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fb]'), function (a) { a.setAttribute('href', fb); });
     document.getElementById('foot-year').textContent = '© ' + new Date().getFullYear() + ' ' + C.storeName;
   }
+
+  /* ---------- what the cart needs from the shop ---------- */
+
+  function findById(id) {
+    for (var i = 0; i < state.products.length; i++) if (state.products[i].id === id) return state.products[i];
+    return null;
+  }
+  window.KefadaShop = {
+    ready: function () { return productsReady; },
+    find: findById,
+    push: pushState,
+    refresh: function () { loadProducts(true); }
+  };
 
   /* ---------- start ---------- */
 
   function init() {
     fillStatic();
+    loadProducts(false);
+  }
+
+  function loadProducts(quiet) {
     var fallback = window.FALLBACK_ROWS || [];
     if (!C.sheetCsvUrl) { setProducts(fallback); return; }
-    countEl.textContent = 'Loading the collection...';
+    if (!quiet) countEl.textContent = 'Loading the collection...';
     var url = C.sheetCsvUrl + (C.sheetCsvUrl.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now();
     fetch(url, { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
