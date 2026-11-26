@@ -247,6 +247,8 @@ if(e.target.closest('#add')&&add.getAttribute('aria-disabled')==='true')e.preven
 </script>`}
 <a class="btn btn2" href="../#shop">Browse the full collection</a>
 </main>
+<script src="../cart-config.js"></script>
+<script src="../track.js" data-item="${esc(p.id)}"></script>
 </body>
 </html>
 `;

@@ -167,6 +167,7 @@
   function goCheckout() {
     if (!lines.length) return;
     push('checkout', 2);
+    if (window.KefadaTrack) KefadaTrack.checkout();
     view = 'checkout'; openedAt = Date.now(); initForm(); render(); fetchSettings();
     panel.scrollTop = 0;
   }
@@ -222,6 +223,7 @@
     if (pieces() + 1 > MAX) { toast('You can order up to ' + MAX + ' pieces at once. For a bigger order, message us on WhatsApp.'); return false; }
     if (line) line.qty += 1; else lines.push({ id: id, size: size, qty: 1 });
     save();
+    if (window.KefadaTrack) KefadaTrack.add(id);
     var before = pieces() - 1;
     if (opts.silent) { updateBadge(); return true; }
     fly(from, p, function () { updateBadge(); bump(); });
@@ -494,6 +496,7 @@
     var f = form;
     lsSet(CUST, { name: f.name.trim(), phone: f.phone.trim(), method: f.method, gov: f.gov, district: f.district, city: f.city.trim(), hood: f.hood.trim(), street: f.street.trim(), details: f.details.trim() });
     doneInfo = { order: o };
+    if (window.KefadaTrack) KefadaTrack.order();
     lines = []; save(); updateBadge(); notice = ''; view = 'done';
     if (window.KefadaShop && shop().refresh) shop().refresh();
     render();

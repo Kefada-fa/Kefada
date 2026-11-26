@@ -562,6 +562,7 @@
     if (!n) return;
     lbReturnFocus = document.activeElement;
     lbState = { p: p, i: (state.photoIdx[p.uid] || 0) % n };
+    if (window.KefadaTrack) KefadaTrack.view(p.id);
     pushState('lb', 1);
     lb.hidden = false;
     document.body.style.overflow = 'hidden';
